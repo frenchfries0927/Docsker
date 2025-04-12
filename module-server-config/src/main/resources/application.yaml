@@ -1,0 +1,64 @@
+server:
+  port: 8763
+
+
+spring:
+  application:
+    name: config
+
+  profiles:
+    active: dev # 배포 시에는 prod로 바꾸거나 환경변수로 오버라이드
+
+  cloud:
+    config:
+      server:
+        git:
+          uri: git@github.com:Docsker/Config_Repository.git
+          default-label: main
+          ignore-local-ssh-settings: true
+          private-key: |
+            -----BEGIN RSA PRIVATE KEY-----
+            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
+            -----END RSA PRIVATE KEY-----
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh, health, beans

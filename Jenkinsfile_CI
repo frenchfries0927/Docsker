@@ -1,0 +1,180 @@
+pipeline {
+    agent any
+
+    environment {
+        GITHUB_CREDENTIAL_ID = 'github_hook_id'
+        DOCKERHUB_CREDENTIAL_ID = 'docker-hub-access'
+        DOCKERHUB_TAG = "v1.0.${env.BUILD_NUMBER}"
+    }
+    
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'dev', credentialsId: GITHUB_CREDENTIAL_ID, url: 'https://github.com/Docsker/Docsker.git'
+            }
+        }
+        stage('Build & Push Modules') {
+            parallel {
+                stage('Build module-server') {
+                    when {
+                        anyOf {
+                            changeset "module-server/**"
+                            expression { return env.BUILD_NUMBER.toInteger() == 1 }
+                        }
+                    }
+                    environment {
+                        DOCKERHUB_REPOSITORY_IMAGE = 'jangdaniel/module-server'
+                    }
+                    steps {
+                        dir('module-server') {
+                            script {
+                                sh 'docker build -f Dockerfile -t ${DOCKERHUB_REPOSITORY_IMAGE}:${DOCKERHUB_TAG} ../'
+                                withCredentials([usernamePassword(credentialsId: DOCKERHUB_CREDENTIAL_ID, usernameVariable: 'DOCKERHUB_USERNAME', passwordVariable: 'DOCKERHUB_PASSWORD')]) {
+                                    sh 'echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin'
+                                }
+                                sh 'docker push ${DOCKERHUB_REPOSITORY_IMAGE}:${DOCKERHUB_TAG}'
+                            }
+                        }
+                    }
+                }
+                stage('Build module-server-config') {
+                    when {
+                        anyOf {
+                            changeset "module-server-config/**"
+                            expression { return env.BUILD_NUMBER.toInteger() == 1 }
+                        }
+                    }
+                    environment {
+                        DOCKERHUB_REPOSITORY_IMAGE = 'jangdaniel/module-server-config'
+                    }
+                    steps {
+                        dir('module-server-config') {
+                            script {
+                                sh 'docker build -f Dockerfile -t ${DOCKERHUB_REPOSITORY_IMAGE}:${DOCKERHUB_TAG} ../'
+                                withCredentials([usernamePassword(credentialsId: DOCKERHUB_CREDENTIAL_ID, usernameVariable: 'DOCKERHUB_USERNAME', passwordVariable: 'DOCKERHUB_PASSWORD')]) {
+                                    sh 'echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin'
+                                }
+                                sh 'docker push ${DOCKERHUB_REPOSITORY_IMAGE}:${DOCKERHUB_TAG}'
+                            }
+                        }
+                    }
+                }
+                stage('Build module-gateway') {
+                    when {
+                        anyOf {
+                            changeset "module-gateway/**"
+                            expression { return env.BUILD_NUMBER.toInteger() == 1 }
+                        }
+                    }
+                    environment {
+                        DOCKERHUB_REPOSITORY_IMAGE = 'jangdaniel/module-gateway'
+                    }
+                    steps {
+                        dir('module-gateway') {
+                            script {
+                                sh 'docker build -f Dockerfile -t ${DOCKERHUB_REPOSITORY_IMAGE}:${DOCKERHUB_TAG} ../'
+                                withCredentials([usernamePassword(credentialsId: DOCKERHUB_CREDENTIAL_ID, usernameVariable: 'DOCKERHUB_USERNAME', passwordVariable: 'DOCKERHUB_PASSWORD')]) {
+                                    sh 'echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin'
+                                }
+                                sh 'docker push ${DOCKERHUB_REPOSITORY_IMAGE}:${DOCKERHUB_TAG}'
+                            }
+                        }
+                    }
+                }
+                stage('Build module-service-admin') {
+                    when {
+                        anyOf {
+                            changeset "module-service-admin/**"
+                            expression { return env.BUILD_NUMBER.toInteger() == 1 }
+                        }
+                    }
+                    environment {
+                        DOCKERHUB_REPOSITORY_IMAGE = 'jangdaniel/module-service-admin'
+                    }
+                    steps {
+                        dir('module-service-admin') {
+                            script {
+                                sh 'docker build -f Dockerfile -t ${DOCKERHUB_REPOSITORY_IMAGE}:${DOCKERHUB_TAG} ../'
+                                withCredentials([usernamePassword(credentialsId: DOCKERHUB_CREDENTIAL_ID, usernameVariable: 'DOCKERHUB_USERNAME', passwordVariable: 'DOCKERHUB_PASSWORD')]) {
+                                    sh 'echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin'
+                                }
+                                sh 'docker push ${DOCKERHUB_REPOSITORY_IMAGE}:${DOCKERHUB_TAG}'
+                            }
+                        }
+                    }
+                }
+                stage('Build module-service-user') {
+                    when {
+                        anyOf {
+                            changeset "module-service-user/**"
+                            expression { return env.BUILD_NUMBER.toInteger() == 1 }
+                        }
+                    }
+                    environment {
+                        DOCKERHUB_REPOSITORY_IMAGE = 'jangdaniel/module-service-user'
+                    }
+                    steps {
+                        dir('module-service-user') {
+                            script {
+                                sh 'docker build -f Dockerfile -t ${DOCKERHUB_REPOSITORY_IMAGE}:${DOCKERHUB_TAG} ../'
+                                withCredentials([usernamePassword(credentialsId: DOCKERHUB_CREDENTIAL_ID, usernameVariable: 'DOCKERHUB_USERNAME', passwordVariable: 'DOCKERHUB_PASSWORD')]) {
+                                    sh 'echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin'
+                                }
+                                sh 'docker push ${DOCKERHUB_REPOSITORY_IMAGE}:${DOCKERHUB_TAG}'
+                            }
+                        }
+                    }
+                }
+                stage('Build module-service-datacollection') {
+                    when {
+                        anyOf {
+                            changeset "module-service-datacollection/**"
+                            expression { return env.BUILD_NUMBER.toInteger() == 1 }
+                        }
+                    }
+                    environment {
+                        DOCKERHUB_REPOSITORY_IMAGE = 'jangdaniel/module-service-datacollection'
+                    }
+                    steps {
+                        dir('module-service-datacollection') {
+                            script {
+                                sh 'docker build -f Dockerfile -t ${DOCKERHUB_REPOSITORY_IMAGE}:${DOCKERHUB_TAG} ../'
+                                withCredentials([usernamePassword(credentialsId: DOCKERHUB_CREDENTIAL_ID, usernameVariable: 'DOCKERHUB_USERNAME', passwordVariable: 'DOCKERHUB_PASSWORD')]) {
+                                    sh 'echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin'
+                                }
+                                sh 'docker push ${DOCKERHUB_REPOSITORY_IMAGE}:${DOCKERHUB_TAG}'
+                            }
+                        }
+                    }
+                }
+                stage('Build module-service-content') {
+                    when {
+                        anyOf {
+                            changeset "module-service-content/**"
+                            expression { return env.BUILD_NUMBER.toInteger() == 1 }
+                        }
+                    }
+                    environment {
+                        DOCKERHUB_REPOSITORY_IMAGE = 'jangdaniel/module-service-content'
+                    }
+                    steps {
+                        dir('module-service-content') {
+                            script {
+                                sh 'docker build -f Dockerfile -t ${DOCKERHUB_REPOSITORY_IMAGE}:${DOCKERHUB_TAG} ../'
+                                withCredentials([usernamePassword(credentialsId: DOCKERHUB_CREDENTIAL_ID, usernameVariable: 'DOCKERHUB_USERNAME', passwordVariable: 'DOCKERHUB_PASSWORD')]) {
+                                    sh 'echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin'
+                                }
+                                sh 'docker push ${DOCKERHUB_REPOSITORY_IMAGE}:${DOCKERHUB_TAG}'
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    post {
+        always {
+            echo 'CI 파이프라인 완료'
+        }
+    }
+}

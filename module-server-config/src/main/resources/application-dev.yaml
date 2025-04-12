@@ -1,0 +1,9 @@
+eureka:
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: http://127.0.0.1:8761/eureka
+
+  instance:
+    lease-expiration-duration-in-seconds: 2

@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: datacollection
+  profiles:
+    active: dev
+  config:
+    import: "optional:configserver:http://127.0.0.1:8763"
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh, health, beans
+

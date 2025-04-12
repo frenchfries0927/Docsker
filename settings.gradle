@@ -1,0 +1,8 @@
+rootProject.name = 'docsker'
+include 'module-server'
+include 'module-server-config'
+include 'module-gateway'
+include 'module-service-admin'
+include 'module-service-content'
+include 'module-service-datacollection'
+include 'module-service-user'

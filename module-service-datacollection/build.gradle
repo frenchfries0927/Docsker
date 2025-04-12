@@ -1,0 +1,82 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.4.3'
+    id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'com.project'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+bootJar {
+    mainClass = 'com.project.moduleservicedatacollection.ModuleServiceDatacollectionApplication'
+}
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    set('springCloudVersion', "2024.0.0")
+}
+
+dependencies {
+    // spring
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    // lombok
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    // spring cloud config
+    implementation 'org.springframework.cloud:spring-cloud-config-client'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+    // eureka
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+
+    // DB
+    runtimeOnly 'org.postgresql:postgresql'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    
+    // HTTP 요청 라이브러리 (OkHttp)
+    implementation 'com.squareup.okhttp3:okhttp:4.9.3'
+
+    // JSON 파싱 라이브러리 (Jackson)
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+
+    // Selenium 의존성
+    implementation 'org.seleniumhq.selenium:selenium-java:4.29.0'
+
+    // WebDriver Manager (자동 설치)
+    implementation 'io.github.bonigarcia:webdrivermanager:5.8.0'
+
+    // jsoup
+    implementation 'org.jsoup:jsoup:1.15.3'
+
+    // WebClient
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+    // Apache HttpClient 의존성
+    implementation 'org.apache.httpcomponents:httpmime:4.5.13'
+
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
