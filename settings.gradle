@@ -1,4 +1,4 @@
-rootProject.name = 'docsker'
+rootProject.name = 'Docsker'
 include 'module-server'
 include 'module-server-config'
 include 'module-gateway'

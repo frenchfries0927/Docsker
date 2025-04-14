@@ -1,6 +1,7 @@
-version: '3'
+version: "3"
 
 services:
+  # === 모니터링 ===
   prometheus:
     image: prom/prometheus
     container_name: prometheus
@@ -16,3 +17,173 @@ services:
       - "3001:3000"
     depends_on:
       - prometheus
+
+  # === 설정 서버 ===
+  config-server:
+    build:
+      context: ../
+      dockerfile: module-server-config/Dockerfile
+    ports:
+      - "8763:8763"
+
+  # === 게이트웨이 ===
+  gateway:
+    build:
+      context: ../
+      dockerfile: module-gateway/Dockerfile
+    ports:
+      - "8762:8762"
+    depends_on:
+      - config-server
+
+  # === 공통 서버 모듈 ===
+  module-server:
+    build:
+      context: ../
+      dockerfile: module-server/Dockerfile
+    ports:
+      - "8761:8761"
+    depends_on:
+      - config-server
+
+  # === 도메인 서비스 모듈들 ===
+  service-admin:
+    build:
+      context: ../
+      dockerfile: module-service-admin/Dockerfile
+    ports:
+      - "5001:5001"
+    depends_on:
+      - config-server
+
+  service-user:
+    build:
+      context: ../
+      dockerfile: module-service-user/Dockerfile
+    ports:
+      - "5002:5002"
+    depends_on:
+      - config-server
+
+  service-datacollection:
+    build:
+      context: ../
+      dockerfile: module-service-datacollection/Dockerfile
+    ports:
+      - "5003:5003"
+    depends_on:
+      - config-server
+
+  service-content:
+    build:
+      context: ../
+      dockerfile: module-service-content/Dockerfile
+    ports:
+      - "5004:5004"
+    depends_on:
+      - config-server
+
+  # === 프론트엔드 (Next.js) ===
+  frontend:
+    build:
+      context: ../module-server-front
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - gateway
+
+
+#version: "3"
+#services:
+#  # === 모니터링 ===
+#  prometheus:
+#    image: prom/prometheus
+#    container_name: prometheus
+#    ports:
+#      - "9090:9090"
+#    volumes:
+#      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+#
+#  grafana:
+#    image: grafana/grafana
+#    container_name: grafana
+#    ports:
+#      - "3001:3000"
+#    depends_on:
+#      - prometheus
+#
+#  # === 설정 서버 ===
+#  config-server:
+#    build:
+#      context: .
+#      dockerfile: module-server-config/Dockerfile
+#    ports:
+#      - "8763:8763"
+#
+#  # === 게이트웨이 ===
+#  gateway:
+#    build:
+#      context: .
+#      dockerfile: module-gateway/Dockerfile
+#    ports:
+#      - "8762:8762"
+#    depends_on:
+#      - config-server
+#
+#  # === 서버 모듈 ===
+#  module-server:
+#    build:
+#      context: .
+#      dockerfile: module-server/Dockerfile
+#    ports:
+#      - "8761:8761"
+#    depends_on:
+#      - config-server
+#
+#  # === 서비스 모듈들 ===
+#  service-admin:
+#    build:
+#      context: .
+#      dockerfile: module-service-admin/Dockerfile
+#    ports:
+#      - "5001:5001"
+#    depends_on:
+#      - config-server
+#
+#  service-user:
+#    build:
+#      context: .
+#      dockerfile: module-service-user/Dockerfile
+#    ports:
+#      - "5002:5002"
+#    depends_on:
+#      - config-server
+#
+#  service-datacollection:
+#    build:
+#      context: .
+#      dockerfile: module-service-datacollection/Dockerfile
+#    ports:
+#      - "5003:5003"
+#    depends_on:
+#      - config-server
+#
+#  service-content:
+#    build:
+#      context: .
+#      dockerfile: module-service-content/Dockerfile
+#    ports:
+#      - "5004:5004"
+#    depends_on:
+#      - config-server
+#
+#  # === 프론트엔드 (Next.js) ===
+#  frontend:
+#    build:
+#      context: ./module-server-front
+#      dockerfile: Dockerfile
+#    ports:
+#      - "3000:3000"
+#    depends_on:
+#      - gateway
